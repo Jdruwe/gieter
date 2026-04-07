@@ -9,64 +9,156 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
+import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
 import { Route as ApiSeedRouteImport } from './routes/api/seed'
+import { Route as ProtectedTasksRouteImport } from './routes/_protected/tasks'
+import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
+import { Route as ProtectedPlantsIndexRouteImport } from './routes/_protected/plants/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ProtectedPlantsPlantIdRouteImport } from './routes/_protected/plants/$plantId'
 
-const IndexRoute = IndexRouteImport.update({
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const ApiSeedRoute = ApiSeedRouteImport.update({
   id: '/api/seed',
   path: '/api/seed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedTasksRoute = ProtectedTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedPlantsIndexRoute = ProtectedPlantsIndexRouteImport.update({
+  id: '/plants/',
+  path: '/plants/',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedPlantsPlantIdRoute = ProtectedPlantsPlantIdRouteImport.update({
+  id: '/plants/$plantId',
+  path: '/plants/$plantId',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof ProtectedIndexRoute
+  '/login': typeof LoginRoute
+  '/settings': typeof ProtectedSettingsRoute
+  '/tasks': typeof ProtectedTasksRoute
   '/api/seed': typeof ApiSeedRoute
+  '/plants/$plantId': typeof ProtectedPlantsPlantIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/plants/': typeof ProtectedPlantsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/settings': typeof ProtectedSettingsRoute
+  '/tasks': typeof ProtectedTasksRoute
   '/api/seed': typeof ApiSeedRoute
+  '/': typeof ProtectedIndexRoute
+  '/plants/$plantId': typeof ProtectedPlantsPlantIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/plants': typeof ProtectedPlantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_protected': typeof ProtectedRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_protected/settings': typeof ProtectedSettingsRoute
+  '/_protected/tasks': typeof ProtectedTasksRoute
   '/api/seed': typeof ApiSeedRoute
+  '/_protected/': typeof ProtectedIndexRoute
+  '/_protected/plants/$plantId': typeof ProtectedPlantsPlantIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_protected/plants/': typeof ProtectedPlantsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/seed' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/settings'
+    | '/tasks'
+    | '/api/seed'
+    | '/plants/$plantId'
+    | '/api/auth/$'
+    | '/plants/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/seed' | '/api/auth/$'
-  id: '__root__' | '/' | '/api/seed' | '/api/auth/$'
+  to:
+    | '/login'
+    | '/settings'
+    | '/tasks'
+    | '/api/seed'
+    | '/'
+    | '/plants/$plantId'
+    | '/api/auth/$'
+    | '/plants'
+  id:
+    | '__root__'
+    | '/_protected'
+    | '/login'
+    | '/_protected/settings'
+    | '/_protected/tasks'
+    | '/api/seed'
+    | '/_protected/'
+    | '/_protected/plants/$plantId'
+    | '/api/auth/$'
+    | '/_protected/plants/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ApiSeedRoute: typeof ApiSeedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected/': {
+      id: '/_protected/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
     '/api/seed': {
       id: '/api/seed'
@@ -75,6 +167,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSeedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/tasks': {
+      id: '/_protected/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof ProtectedTasksRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/settings': {
+      id: '/_protected/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ProtectedSettingsRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/plants/': {
+      id: '/_protected/plants/'
+      path: '/plants'
+      fullPath: '/plants/'
+      preLoaderRoute: typeof ProtectedPlantsIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -82,11 +195,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/plants/$plantId': {
+      id: '/_protected/plants/$plantId'
+      path: '/plants/$plantId'
+      fullPath: '/plants/$plantId'
+      preLoaderRoute: typeof ProtectedPlantsPlantIdRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
   }
 }
 
+interface ProtectedRouteRouteChildren {
+  ProtectedSettingsRoute: typeof ProtectedSettingsRoute
+  ProtectedTasksRoute: typeof ProtectedTasksRoute
+  ProtectedIndexRoute: typeof ProtectedIndexRoute
+  ProtectedPlantsPlantIdRoute: typeof ProtectedPlantsPlantIdRoute
+  ProtectedPlantsIndexRoute: typeof ProtectedPlantsIndexRoute
+}
+
+const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
+  ProtectedSettingsRoute: ProtectedSettingsRoute,
+  ProtectedTasksRoute: ProtectedTasksRoute,
+  ProtectedIndexRoute: ProtectedIndexRoute,
+  ProtectedPlantsPlantIdRoute: ProtectedPlantsPlantIdRoute,
+  ProtectedPlantsIndexRoute: ProtectedPlantsIndexRoute,
+}
+
+const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
+  ProtectedRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
   ApiSeedRoute: ApiSeedRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
