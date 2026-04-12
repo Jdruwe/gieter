@@ -43,27 +43,23 @@ export function LoginForm({
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      await new Promise<void>((resolve, reject) => {
-        authClient.signIn.email(
-          {
-            email: value.email,
-            password: value.password,
-            callbackURL: "/",
+      await authClient.signIn.email(
+        {
+          email: value.email,
+          password: value.password,
+          callbackURL: "/",
+        },
+        {
+          onSuccess: () => {
+            toast.success("Logged in successfully!")
           },
-          {
-            onSuccess: () => {
-              toast.success("Logged in successfully!")
-              resolve()
-            },
-            onError: (ctx) => {
-              toast.error(
-                ctx.error.message || "Failed to login. Please try again."
-              )
-              reject()
-            },
-          }
-        )
-      })
+          onError: (ctx) => {
+            toast.error(
+              ctx.error.message || "Failed to login. Please try again."
+            )
+          },
+        }
+      )
     },
   })
 
@@ -134,12 +130,15 @@ export function LoginForm({
                 }}
               />
               <Field>
-                <Button type="submit" disabled={form.state.isSubmitting}>
-                  Login
-                  {form.state.isSubmitting && (
-                    <Spinner data-icon="inline-start" />
+                <form.Subscribe
+                  selector={(state) => state.isSubmitting}
+                  children={(isSubmitting) => (
+                    <Button type="submit" disabled={isSubmitting}>
+                      Login
+                      {isSubmitting && <Spinner data-icon="inline-start" />}
+                    </Button>
                   )}
-                </Button>
+                />
               </Field>
             </FieldGroup>
           </form>
