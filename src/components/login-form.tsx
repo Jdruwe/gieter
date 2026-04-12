@@ -18,6 +18,7 @@ import z from "zod"
 import { useForm } from "@tanstack/react-form"
 import { authClient } from "@/lib/auth-client.ts"
 import { toast } from "sonner"
+import { Spinner } from "@/components/ui/spinner.tsx"
 
 const formSchema = z.object({
   email: z.email("Please enter a valid email address."),
@@ -131,6 +132,9 @@ export function LoginForm({
               <Field>
                 <Button type="submit" disabled={form.state.isSubmitting}>
                   Login
+                  {form.state.isSubmitting && (
+                    <Spinner data-icon="inline-start" />
+                  )}
                 </Button>
               </Field>
             </FieldGroup>
