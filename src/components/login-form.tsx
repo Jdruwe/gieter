@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -24,6 +23,10 @@ const formSchema = z.object({
   email: z.email("Please enter a valid email address."),
   password: z.string().min(8, "Password must be at least 8 characters long."),
 })
+
+// TODO: keep track of https://github.com/cloudflare/workers-sdk/issues/13013
+// TODO: add Cloudflare secrets!
+// TODO: trigger seed route
 
 export function LoginForm({
   className,
@@ -53,7 +56,6 @@ export function LoginForm({
             toast.error(
               ctx.error.message || "Failed to login. Please try again."
             )
-            // todo: toast notification
           },
         }
       )
@@ -128,12 +130,6 @@ export function LoginForm({
               />
               <Field>
                 <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
-                  Login with Google
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
-                </FieldDescription>
               </Field>
             </FieldGroup>
           </form>

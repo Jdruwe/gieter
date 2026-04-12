@@ -7,7 +7,7 @@ export const Route = createFileRoute("/api/seed")({
     handlers: {
       POST: async ({ request }: { request: Request }) => {
         const authHeader = request.headers.get("Authorization")
-        const setupSecret = (env as Env).SETUP_SECRET
+        const setupSecret = env.SEED_SECRET
 
         if (!setupSecret || authHeader !== `Bearer ${setupSecret}`) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -16,9 +16,9 @@ export const Route = createFileRoute("/api/seed")({
           })
         }
 
-        const email = (env as Env).SEED_EMAIL
-        const password = (env as Env).SEED_PASSWORD
-        const name = (env as Env).SEED_NAME
+        const email = env.SEED_EMAIL
+        const password = env.SEED_PASSWORD
+        const name = env.SEED_NAME
 
         if (!email || !password || !name) {
           return new Response(
