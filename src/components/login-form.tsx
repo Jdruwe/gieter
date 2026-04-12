@@ -43,23 +43,27 @@ export function LoginForm({
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      await authClient.signIn.email(
-        {
-          email: value.email,
-          password: value.password,
-          callbackURL: "/",
-        },
-        {
-          onSuccess: () => {
-            toast.success("Logged in successfully!")
+      await new Promise<void>((resolve, reject) => {
+        authClient.signIn.email(
+          {
+            email: value.email,
+            password: value.password,
+            callbackURL: "/",
           },
-          onError: (ctx) => {
-            toast.error(
-              ctx.error.message || "Failed to login. Please try again."
-            )
-          },
-        }
-      )
+          {
+            onSuccess: () => {
+              toast.success("Logged in successfully!")
+              resolve()
+            },
+            onError: (ctx) => {
+              toast.error(
+                ctx.error.message || "Failed to login. Please try again."
+              )
+              reject()
+            },
+          }
+        )
+      })
     },
   })
 
