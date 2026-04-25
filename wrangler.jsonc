@@ -5,7 +5,7 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "main": "@tanstack/react-start/server-entry",
+  "main": "src/server.ts",
   "observability": {
     "enabled": true
   },
@@ -19,6 +19,13 @@
       "database_name": "gieter-db",
       "database_id": "88a7e8cf-659a-4525-80b7-a34bafdc2044",
       "migrations_dir": "migrations"
+    }
+  ],
+  "workflows": [
+    {
+      "name": "import-plant-workflow",
+      "binding": "IMPORT_PLANT_WORKFLOW",
+      "class_name": "ImportPlantWorkflow"
     }
   ]
 }

@@ -4,6 +4,9 @@ import { tavily } from "@tavily/core"
 import { generateText, Output } from "ai"
 import { openai } from "@ai-sdk/openai"
 import z from "zod"
+import { PlantRepository } from "@/repositories/plant.repository"
+import { TaskRepository } from "@/repositories/task.repository"
+import { PlantService } from "@/services/plant.service"
 
 type Params = { plant: string }
 
@@ -26,7 +29,7 @@ export class ImportPlantWorkflow extends WorkflowEntrypoint<Env, Params> {
       )
     })
 
-    return await step.do("generate plan", async () => {
+    const generatedPlan = await step.do("generate plan", async () => {
       const { output } = await generateText({
         model: openai("gpt-5-mini-2025-08-07"),
         output: Output.object({
@@ -97,10 +100,20 @@ export class ImportPlantWorkflow extends WorkflowEntrypoint<Env, Params> {
     		<the-ask>
     			The user request a plan to be made for: <plant>${event.payload.plant}</plant>
     		</the-ask>
-   		`,
+    		`,
       })
 
       return output
+    })
+
+    return await step.do("persist plant", async () => {
+      const plantRepository = new PlantRepository(this.env.DB)
+      const taskRepository = new TaskRepository(this.env.DB)
+      const plantService = new PlantService(plantRepository, taskRepository)
+
+      const { plant } = await plantService.createFromImport(generatedPlan)
+
+      return { plantId: plant.id }
     })
   }
 }

@@ -16,7 +16,6 @@ import {
   CheckSquareIcon,
   PlantIcon,
   GearIcon,
-  FlowerTulipIcon,
 } from "@phosphor-icons/react"
 
 const navItems = [
@@ -55,14 +54,16 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="cursor-default select-none">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <FlowerTulipIcon className="size-4" />
-              </div>
+              {/*<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">*/}
+              {/*  <FlowerTulipIcon className="size-4" />*/}
+              {/*</div>*/}
+              <img
+                src="/logo.png"
+                alt="Gieter logo"
+                className="size-8 object-contain"
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">Gieter</span>
-                <span className="truncate text-xs text-muted-foreground">
-                  Plant manager
-                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
