@@ -1,11 +1,9 @@
 import { drizzle } from "drizzle-orm/d1"
 import { eq } from "drizzle-orm"
 import * as plantSchema from "@/db/schemas/plant"
-import { plant } from "@/db/schemas/plant"
-import { PlantMapper } from "@/mappers/plant.mapper"
-import type { PlantEntity } from "@/entities/plant.entity"
+import { plant, type Plant } from "@/db/schemas/plant"
 
-type InsertPlantData = Pick<PlantEntity, "name" | "type" | "sources" | "status">
+type InsertPlantData = Pick<Plant, "name" | "type" | "sources" | "status">
 
 class PlantRepository {
   private readonly db: ReturnType<typeof drizzle>
@@ -14,7 +12,7 @@ class PlantRepository {
     this.db = drizzle(d1, { schema: plantSchema })
   }
 
-  async insert(data: InsertPlantData): Promise<PlantEntity> {
+  async insert(data: InsertPlantData): Promise<Plant> {
     const now = new Date().toISOString()
 
     const [row] = await this.db
@@ -28,17 +26,17 @@ class PlantRepository {
       })
       .returning()
 
-    return PlantMapper.toEntity(row)
+    return row
   }
 
-  async findById(id: number): Promise<PlantEntity | null> {
+  async findById(id: number): Promise<Plant | null> {
     const [row] = await this.db
       .select()
       .from(plant)
       .where(eq(plant.id, id))
       .limit(1)
 
-    return row ? PlantMapper.toEntity(row) : null
+    return row ?? null
   }
 }
 

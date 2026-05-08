@@ -6,7 +6,7 @@ import type {
   TaskRepository,
   InsertTaskData,
 } from "@/repositories/task.repository"
-import type { PlantEntity } from "@/entities/plant.entity"
+import type { Plant } from "@/db/schemas/plant"
 
 type ImportPlantOutput = {
   name: string
@@ -20,7 +20,7 @@ type ImportPlantOutput = {
 }
 
 type CreateFromImportResult = {
-  plant: PlantEntity
+  plant: Plant
 }
 
 class PlantService {

@@ -1,11 +1,9 @@
 import { drizzle } from "drizzle-orm/d1"
 import * as plantSchema from "@/db/schemas/plant"
-import { tasks } from "@/db/schemas/plant"
-import { TaskMapper } from "@/mappers/task.mapper"
-import type { TaskEntity } from "@/entities/task.entity"
+import { tasks, type Task } from "@/db/schemas/plant"
 
 type InsertTaskData = Pick<
-  TaskEntity,
+  Task,
   "description" | "deadlineMonth" | "deadlineDay" | "products"
 >
 
@@ -16,10 +14,7 @@ class TaskRepository {
     this.db = drizzle(d1, { schema: plantSchema })
   }
 
-  async insertMany(
-    plantId: number,
-    data: InsertTaskData[]
-  ): Promise<TaskEntity[]> {
+  async insertMany(plantId: number, data: InsertTaskData[]): Promise<Task[]> {
     const now = new Date().toISOString()
 
     const rows = await this.db
@@ -36,7 +31,7 @@ class TaskRepository {
       )
       .returning()
 
-    return TaskMapper.toEntityList(rows)
+    return rows
   }
 }
 

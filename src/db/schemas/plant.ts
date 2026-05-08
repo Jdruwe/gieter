@@ -46,3 +46,6 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
     references: [plant.id],
   }),
 }))
+
+export type Plant = typeof plant.$inferSelect
+export type Task = typeof tasks.$inferSelect
