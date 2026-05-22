@@ -1,7 +1,7 @@
 import { introspectWorkflowInstance } from "cloudflare:test"
 import { env } from "cloudflare:workers"
 import { it, expect } from "vitest"
-import { plantCareSchema } from "@/workflows/plant-care-prompt"
+import { plantCareSchema } from "@/domain/plant-care"
 
 // A known-valid AI response parsed through the real schema — guarantees the
 // fixture matches the contract the workflow passes to PlantService.

@@ -1,5 +1,5 @@
 import { it, expect } from "vitest"
-import { plantCareSchema } from "@/workflows/plant-care-prompt"
+import { plantCareSchema } from "@/domain/plant-care"
 
 it("accepts a well-formed plan", () => {
   expect(() =>

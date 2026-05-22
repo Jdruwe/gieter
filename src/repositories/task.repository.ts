@@ -1,5 +1,4 @@
-import { drizzle } from "drizzle-orm/d1"
-import * as plantSchema from "@/db/schemas/plant"
+import { createDb } from "@/db"
 import { tasks, type Task } from "@/db/schemas/plant"
 
 type InsertTaskData = Pick<
@@ -8,10 +7,10 @@ type InsertTaskData = Pick<
 >
 
 class TaskRepository {
-  private readonly db: ReturnType<typeof drizzle>
+  private readonly db: ReturnType<typeof createDb>
 
   constructor(d1: D1Database) {
-    this.db = drizzle(d1, { schema: plantSchema })
+    this.db = createDb(d1)
   }
 
   async insertMany(plantId: number, data: InsertTaskData[]): Promise<Task[]> {

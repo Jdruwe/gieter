@@ -7,17 +7,7 @@ import type {
   InsertTaskData,
 } from "@/repositories/task.repository"
 import type { Plant } from "@/db/schemas/plant"
-
-type ImportPlantOutput = {
-  name: string
-  type: string
-  sources: string[]
-  tasks: Array<{
-    description: string
-    deadline: { month: number; day: number }
-    products: string[]
-  }>
-}
+import type { PlantCarePlan } from "@/domain/plant-care"
 
 type CreateFromImportResult = {
   plant: Plant
@@ -30,7 +20,7 @@ class PlantService {
   ) {}
 
   async createFromImport(
-    output: ImportPlantOutput
+    output: PlantCarePlan
   ): Promise<CreateFromImportResult> {
     const plantData: InsertPlantData = {
       name: output.name,
@@ -55,4 +45,3 @@ class PlantService {
 }
 
 export { PlantService }
-export type { ImportPlantOutput }

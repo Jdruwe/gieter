@@ -1,15 +1,13 @@
-import { drizzle } from "drizzle-orm/d1"
-import { eq } from "drizzle-orm"
-import * as plantSchema from "@/db/schemas/plant"
+import { createDb } from "@/db"
 import { plant, type Plant } from "@/db/schemas/plant"
 
 type InsertPlantData = Pick<Plant, "name" | "type" | "sources" | "status">
 
 class PlantRepository {
-  private readonly db: ReturnType<typeof drizzle>
+  private readonly db: ReturnType<typeof createDb>
 
   constructor(d1: D1Database) {
-    this.db = drizzle(d1, { schema: plantSchema })
+    this.db = createDb(d1)
   }
 
   async insert(data: InsertPlantData): Promise<Plant> {
@@ -27,16 +25,6 @@ class PlantRepository {
       .returning()
 
     return row
-  }
-
-  async findById(id: number): Promise<Plant | null> {
-    const [row] = await this.db
-      .select()
-      .from(plant)
-      .where(eq(plant.id, id))
-      .limit(1)
-
-    return row ?? null
   }
 }
 
