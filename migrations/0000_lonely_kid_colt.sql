@@ -50,4 +50,31 @@ CREATE TABLE `verification` (
 	`updated_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL
 );
 --> statement-breakpoint
-CREATE INDEX `verification_identifier_idx` ON `verification` (`identifier`);
+CREATE INDEX `verification_identifier_idx` ON `verification` (`identifier`);--> statement-breakpoint
+CREATE TABLE `imports` (
+	`id` text PRIMARY KEY NOT NULL,
+	`plant_name` text NOT NULL,
+	`created_at` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `plants` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`type` text NOT NULL,
+	`status` text DEFAULT 'draft' NOT NULL,
+	`sources` text DEFAULT '[]' NOT NULL,
+	`created_at` integer NOT NULL,
+	`updated_at` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `tasks` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`plant_id` integer NOT NULL,
+	`description` text NOT NULL,
+	`deadline_month` integer NOT NULL,
+	`deadline_day` integer NOT NULL,
+	`products` text DEFAULT '[]' NOT NULL,
+	`created_at` integer NOT NULL,
+	`updated_at` integer NOT NULL,
+	FOREIGN KEY (`plant_id`) REFERENCES `plants`(`id`) ON UPDATE no action ON DELETE cascade
+);

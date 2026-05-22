@@ -10,12 +10,22 @@ export const plant = sqliteTable("plants", {
     .default("draft"),
   sources: text("sources", { mode: "json" })
     .notNull()
-    .$type<string[]>()
+    .$type<Array<string>>()
     .default(sql`'[]'`),
-  createdAt: text("created_at")
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").notNull(),
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+})
+
+export const imports = sqliteTable("imports", {
+  id: text("id").primaryKey(),
+  plantName: text("plant_name").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 })
 
 export const tasks = sqliteTable("tasks", {
@@ -28,12 +38,14 @@ export const tasks = sqliteTable("tasks", {
   deadlineDay: integer("deadline_day").notNull(),
   products: text("products", { mode: "json" })
     .notNull()
-    .$type<string[]>()
+    .$type<Array<string>>()
     .default(sql`'[]'`),
-  createdAt: text("created_at")
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").notNull(),
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 })
 
 export const plantsRelations = relations(plant, ({ many }) => ({
@@ -49,3 +61,4 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
 
 export type Plant = typeof plant.$inferSelect
 export type Task = typeof tasks.$inferSelect
+export type Import = typeof imports.$inferSelect

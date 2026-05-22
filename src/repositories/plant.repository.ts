@@ -11,8 +11,6 @@ class PlantRepository {
   }
 
   async insert(data: InsertPlantData): Promise<Plant> {
-    const now = new Date().toISOString()
-
     const [row] = await this.db
       .insert(plant)
       .values({
@@ -20,7 +18,7 @@ class PlantRepository {
         type: data.type,
         sources: data.sources,
         status: data.status,
-        updatedAt: now,
+        updatedAt: new Date(),
       })
       .returning()
 

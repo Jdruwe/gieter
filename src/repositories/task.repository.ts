@@ -13,9 +13,7 @@ class TaskRepository {
     this.db = createDb(d1)
   }
 
-  async insertMany(plantId: number, data: InsertTaskData[]): Promise<Task[]> {
-    const now = new Date().toISOString()
-
+  async insertMany(plantId: number, data: Array<InsertTaskData>): Promise<Array<Task>> {
     const rows = await this.db
       .insert(tasks)
       .values(
@@ -25,7 +23,7 @@ class TaskRepository {
           deadlineMonth: task.deadlineMonth,
           deadlineDay: task.deadlineDay,
           products: task.products,
-          updatedAt: now,
+          updatedAt: new Date(),
         }))
       )
       .returning()
