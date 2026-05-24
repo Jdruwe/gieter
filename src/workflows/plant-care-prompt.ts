@@ -1,20 +1,21 @@
-type ExtractionResult = {
-  title: string | null
-  url: string
-  rawContent: string
+// todo: specify interface at this level? Also look into https://www.youtube.com/watch?v=e0AIkYrXAYE
+interface ReferenceSource {
+  title: string | null;
+  url: string;
+  content: string;
 }
 
-export function buildPlantCarePrompt(
+function buildPlantCarePrompt(
   plantName: string,
-  extractionResults: ExtractionResult[]
+  sources: ReferenceSource[]
 ): { system: string; prompt: string } {
   const system = `
-- Only use the <extraction-results> as a source of truth, do NOT generate something of your own
+- Only use the <reference-sources> as a source of truth, do NOT generate something of your own
 - Generate output in Dutch, even if the input is in another language.
 - Avoid using vague references like 'in three months' or 'late autumn.' Always calculate and state the exact deadline or scheduled date for a task to ensure maintenance logs remain actionable and unambiguous.
 - Sort maintenance tasks by date ascending
 - Providing enough details when pruning info is shared
-`
+`;
 
   const prompt = `
 <task-context>
@@ -22,24 +23,27 @@ export function buildPlantCarePrompt(
 </task-context>
 
 <background-data>
-  <extraction-results>
-    ${extractionResults
+  <reference-sources>
+    ${sources
       .map(
-        (result) => `
+        (source) => `
     <result>
-      <title>${result.title}</title>
-      <url>${result.url}</url>
-      <content>${result.rawContent}</content>
+      <!--todo: render optionally?-->
+      <title>${source.title}</title>
+      <url>${source.url}</url>
+      <content>${source.content}</content>
     </result>`
       )
       .join("\n")}
-  </extraction-results>
+  </reference-sources>
 </background-data>
 
 <the-ask>
   The user request a plan to be made for: <plant>${plantName}</plant>
 </the-ask>
-`
+`;
 
-  return { system, prompt }
+  return { system, prompt };
 }
+
+export { type ReferenceSource, buildPlantCarePrompt };
