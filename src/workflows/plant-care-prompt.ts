@@ -28,8 +28,7 @@ function buildPlantCarePrompt(
       .map(
         (source) => `
     <result>
-      <!--todo: render optionally?-->
-      <title>${source.title}</title>
+      ${source.title && `<title>${source.title}</title>`}
       <url>${source.url}</url>
       <content>${source.content}</content>
     </result>`
