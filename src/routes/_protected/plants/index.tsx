@@ -6,8 +6,10 @@ import {
 } from "@tanstack/react-query";
 import { getImportStatuses } from "@/lib/plant.functions";
 import { ImportStatusesTable } from "@/components/plants/import-statuses-table";
-import { ImportPlant } from "@/components/plants/import-plant";
-import { Separator } from "@/components/ui/separator.tsx";
+import { ImportPlantDialog } from "@/components/plants/import-plant-dialog.tsx";
+import { useState } from "react";
+import { Button } from "@/components/ui/button.tsx";
+import { PlusIcon } from "@phosphor-icons/react";
 
 const importStatusesOptions = queryOptions({
   queryKey: ["importStatuses"],
@@ -29,19 +31,19 @@ export const Route = createFileRoute("/_protected/plants/")({
 });
 
 function PlantsPage() {
-  const queryClient = useQueryClient();
   const { data } = useSuspenseQuery(importStatusesOptions);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
-  function handleImportSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["importStatuses"] });
-  }
-
-  // todo: wouldn't it be cleaner to use a modal?
   return (
-    <div className="flex flex-col gap-8">
-      <ImportPlant onSuccess={handleImportSuccess} />
-      <Separator />
+    <div className="flex flex-col gap-4">
+      <Button className="w-fit" onClick={() => setImportDialogOpen(true)}>
+        <PlusIcon size={32} /> Add New Plant
+      </Button>
       <ImportStatusesTable data={data} />
+      <ImportPlantDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+      />
     </div>
   );
 }

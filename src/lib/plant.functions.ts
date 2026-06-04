@@ -5,7 +5,9 @@ import { ImportRepository } from "@/repositories/import.repository.ts";
 
 export const importPlant = createServerFn({ method: "POST" }).handler(
   async () => {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    throw new Error("Import failed");
 
     return { instanceId: 123 };
   }
