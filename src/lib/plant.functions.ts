@@ -3,29 +3,17 @@ import { env } from "cloudflare:workers";
 import { ensureSession } from "@/lib/auth.functions";
 import { ImportRepository } from "@/repositories/import.repository.ts";
 
-export const importPlant = createServerFn({ method: "POST" }).handler(
-  async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    throw new Error("Import failed");
-
-    return { instanceId: 123 };
-  }
-);
-
-// todo: revert back to below!
-
-// export const importPlant = createServerFn({ method: "POST" })
-//   .inputValidator((data: { plant: string }) => data)
-//   .handler(async ({ data }) => {
-//     await ensureSession();
-//     const instance = await env.IMPORT_PLANT_WORKFLOW.create({
-//       params: { plant: data.plant },
-//     });
-//     const importsRepository = new ImportRepository(env.DB);
-//     await importsRepository.insert({ id: instance.id, plantName: data.plant });
-//     return { instanceId: instance.id };
-//   });
+export const importPlant = createServerFn({ method: "POST" })
+  .inputValidator((data: { plant: string }) => data)
+  .handler(async ({ data }) => {
+    await ensureSession();
+    const instance = await env.IMPORT_PLANT_WORKFLOW.create({
+      params: { plant: data.plant },
+    });
+    const importsRepository = new ImportRepository(env.DB);
+    await importsRepository.insert({ id: instance.id, plantName: data.plant });
+    return { instanceId: instance.id };
+  });
 
 export type ImportState = "pending" | "running" | "complete" | "errored";
 
