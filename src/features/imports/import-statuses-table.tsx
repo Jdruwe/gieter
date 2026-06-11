@@ -5,6 +5,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cva } from "class-variance-authority";
 import { Badge } from "@/components/ui/badge.tsx";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { importQueries } from "@/features/imports/queries";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const statusBadgeVariants = cva("", {
   variants: {
@@ -71,11 +75,27 @@ const columns: ColumnDef<ImportStatus>[] = [
   },
 ];
 
-interface ImportStatusesTableProps {
-  data: ImportStatus[];
+function ImportStatusesTableSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Skeleton key={i} className="h-10 w-full" />
+      ))}
+    </div>
+  );
 }
 
-function ImportStatusesTable({ data }: ImportStatusesTableProps) {
+function ImportStatusesTableContent() {
+  const { data } = useSuspenseQuery({
+    ...importQueries.statuses(),
+    refetchInterval: (query) => {
+      const hasActive = query.state.data?.some(
+        (s) => s.state === "pending" || s.state === "running"
+      );
+      return hasActive ? 3000 : false;
+    },
+  });
+
   return (
     <TooltipProvider>
       <DataTable columns={columns} data={data} />
@@ -83,4 +103,12 @@ function ImportStatusesTable({ data }: ImportStatusesTableProps) {
   );
 }
 
-export { ImportStatusesTable, type ImportStatusesTableProps };
+function ImportStatusesTable() {
+  return (
+    <Suspense fallback={<ImportStatusesTableSkeleton />}>
+      <ImportStatusesTableContent />
+    </Suspense>
+  );
+}
+
+export { ImportStatusesTable };

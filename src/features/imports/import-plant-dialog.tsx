@@ -22,6 +22,7 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button.tsx";
 import z from "zod";
 import { Spinner } from "@/components/ui/spinner.tsx";
+import { importQueries } from "@/features/imports/queries";
 
 const formSchema = z.object({
   name: z.string().min(1, "Plant name is required."),
@@ -36,7 +37,9 @@ function ImportPlantDialog({ ...props }: ImportPlantDialogProps) {
     mutationFn: (name: string) => importPlant({ data: { plant: name } }),
     onSuccess: () => {
       toast.success(`Import started for "${form.state.values.name}".`);
-      void queryClient.invalidateQueries({ queryKey: ["importStatuses"] });
+      void queryClient.invalidateQueries({
+        queryKey: importQueries.all(),
+      });
       form.reset();
     },
     onError: () => {
