@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { env } from "cloudflare:workers";
 import { ensureSession } from "@/lib/auth.functions";
 import { ImportRepository } from "@/repositories/import.repository.ts";
+import z from "zod";
 
 export const importPlant = createServerFn({ method: "POST" })
   .inputValidator((data: { plant: string }) => data)
@@ -47,8 +48,6 @@ export const getImportStatuses = createServerFn({ method: "GET" }).handler(
     const importsRepository = new ImportRepository(env.DB);
     const allImports = await importsRepository.findAll();
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
     const statuses: Array<ImportStatus> = await Promise.all(
       allImports.map(async (imp) => {
         try {
@@ -77,3 +76,15 @@ export const getImportStatuses = createServerFn({ method: "GET" }).handler(
     return statuses;
   }
 );
+
+const deleteImportStatusSchema = z.object({
+  id: z.string(),
+});
+
+export const deleteImportStatus = createServerFn({ method: "POST" })
+  .validator(deleteImportStatusSchema)
+  .handler(async ({ data }) => {
+    await ensureSession();
+    const importsRepository = new ImportRepository(env.DB);
+    await importsRepository.deleteById(data.id);
+  });
