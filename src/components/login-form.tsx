@@ -1,39 +1,32 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import z from "zod"
-import { useForm } from "@tanstack/react-form"
-import { authClient } from "@/lib/auth-client.ts"
-import { toast } from "sonner"
-import { Spinner } from "@/components/ui/spinner.tsx"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import z from "zod";
+import { useForm } from "@tanstack/react-form";
+import { authClient } from "@/lib/auth-client.ts";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner.tsx";
+import type { ComponentProps } from "react";
 
 const formSchema = z.object({
   email: z.email("Please enter a valid email address."),
   password: z.string().min(8, "Password must be at least 8 characters long."),
-})
+});
 
-// TODO: keep track of https://github.com/cloudflare/workers-sdk/issues/13013
-// TODO: add Cloudflare secrets!
-// TODO: trigger seed route
-
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  // todo: take a look at: https://tanstack.com/form/latest/docs/framework/react/examples/tanstack-start, shouldn't I also do something on the server?
+export function LoginForm({ className, ...props }: ComponentProps<"div">) {
   const form = useForm({
     defaultValues: {
       email: "",
@@ -51,17 +44,17 @@ export function LoginForm({
         },
         {
           onSuccess: () => {
-            toast.success("Logged in successfully!")
+            toast.success("Logged in successfully!");
           },
           onError: (ctx) => {
             toast.error(
               ctx.error.message || "Failed to login. Please try again."
-            )
+            );
           },
         }
-      )
+      );
     },
-  })
+  });
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -76,8 +69,8 @@ export function LoginForm({
           <form
             id="login-form"
             onSubmit={(e) => {
-              e.preventDefault()
-              form.handleSubmit()
+              e.preventDefault();
+              form.handleSubmit();
             }}
           >
             <FieldGroup>
@@ -85,7 +78,7 @@ export function LoginForm({
                 name="email"
                 children={(field) => {
                   const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
                     <Field data-invalid={isInvalid}>
                       <FieldLabel htmlFor={field.name}>Email</FieldLabel>
@@ -102,14 +95,14 @@ export function LoginForm({
                         <FieldError errors={field.state.meta.errors} />
                       )}
                     </Field>
-                  )
+                  );
                 }}
               />
               <form.Field
                 name="password"
                 children={(field) => {
                   const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
                     <Field data-invalid={isInvalid}>
                       <FieldLabel htmlFor={field.name}>Password</FieldLabel>
@@ -126,7 +119,7 @@ export function LoginForm({
                         <FieldError errors={field.state.meta.errors} />
                       )}
                     </Field>
-                  )
+                  );
                 }}
               />
               <Field>
@@ -145,5 +138,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
